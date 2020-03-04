@@ -28,7 +28,7 @@ def post_wiki_to_docbase(json)
   puts JSON.parse(json)["title"]
   puts response.code
 
-  sleep 5
+  sleep 3600 / 300 + 1
 end
 
 def title(entry)
