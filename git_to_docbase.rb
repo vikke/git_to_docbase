@@ -1,20 +1,34 @@
 #!/usr/bin/env ruby
 require 'json'
 require 'pathname'
-require 'irb'
+require 'net/http'
 require 'rubygems'
 require 'pry-byebug'
+
 
 def create_json(body, title)
   JSON[{
     body: body,
-    tags: 'GitHubWiki',
+    tags: ['GitHubWiki'],
     title: title
   }]
 end
 
 def post_wiki_to_docbase(json)
+  uri = URI.parse('https://api.docbase.io/teams/lsd-inc/posts')
+  http = Net::HTTP.new(uri.host, uri.port)
+  http.use_ssl = uri.scheme === "https"
+  headers = {
+    'X-DocBaseToken' => $token,
+    'Content-Type' => 'application/json'
+  }
 
+  response = http.post(uri.path, json, headers)
+
+  puts JSON.parse(json)["title"]
+  puts response.code
+
+  sleep 5
 end
 
 def title(entry)
@@ -23,13 +37,8 @@ def title(entry)
 end
 
 def entry_to_docbase(entry)
-  puts entry.to_s
-
   body=IO.read(entry)
-
-  binding.pry
-  puts create_json(body, title(entry))
-  exit
+  post_wiki_to_docbase(create_json(body, title(entry)))
 end
 
 
