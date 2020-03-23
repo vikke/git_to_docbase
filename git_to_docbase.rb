@@ -10,7 +10,9 @@ def create_json(body, title)
   JSON[{
     body: body,
     tags: ['GitHubWiki'],
-    title: title
+    title: title,
+    scope: 'group',
+    groups: [16821]
   }]
 end
 
